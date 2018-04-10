@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="error_title_size">@dimen/text_big</dimen>
+    <dimen name="error_message_size">@dimen/text_normal</dimen>
+    <dimen name="error_refresh_size">@dimen/text_small</dimen>
+
+    <string-array name="camera_dialog_options">
+        <item>@string/camera_dialog_option_take</item>
+        <item>@string/camera_dialog_option_select</item>
+    </string-array>
+</resources>

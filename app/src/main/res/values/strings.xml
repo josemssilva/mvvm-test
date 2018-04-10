@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Bucket List</string>
+
+    <string name="error_common_title">Something strange happened</string>
+    <string name="error_common_message">We don\'t really know what, but sometimes this things happen, no?</string>
+    <string name="error_tap_to_refresh">Tap to Refresh</string>
+
+    <string name="camera_dialog_option_take">Take Picture</string>
+    <string name="camera_dialog_option_select">Select File</string>
+</resources>
