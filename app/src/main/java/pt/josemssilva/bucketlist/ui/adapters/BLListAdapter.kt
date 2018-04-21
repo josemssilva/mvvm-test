@@ -13,7 +13,7 @@ import pt.josemssilva.bucketlist.model.models.GroceryItem
 /**
  * Created by josesilva on 05/04/18.
  */
-class GroceriesAdapter(val itemListener: ItemListener) : RecyclerView.Adapter<GroceriesAdapter.GroceriesVH>() {
+class BLListAdapter(val itemListener: ItemListener) : RecyclerView.Adapter<BLListAdapter.GroceriesVH>() {
 
     interface ItemListener {
         fun onClick(item: GroceryItem)

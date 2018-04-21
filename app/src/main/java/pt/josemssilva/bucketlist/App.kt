@@ -1,8 +1,7 @@
 package pt.josemssilva.bucketlist
 
 import android.app.Application
-import android.content.Context
-import pt.josemssilva.bucketlist.viewmodels.GroceriesListViewModel
+import pt.josemssilva.bucketlist.viewmodels.BLListViewModel
 import pt.josemssilva.bucketlist.model.repositories.GroceriesFirebaseRepositoryImpl
 import pt.josemssilva.bucketlist.model.repositories.GroceriesRepository
 
@@ -13,13 +12,13 @@ class App : Application() {
 
     companion object {
         private val groceriesRepository by lazy { GroceriesFirebaseRepositoryImpl() }
-        private val groceriesViewModel by lazy { GroceriesListViewModel(injectRepository()) }
+        private val groceriesViewModel by lazy { BLListViewModel(injectRepository()) }
 
         fun injectRepository() : GroceriesRepository {
             return groceriesRepository
         }
 
-        fun injectViewModel() : GroceriesListViewModel {
+        fun injectViewModel() : BLListViewModel {
             return groceriesViewModel
         }
     }

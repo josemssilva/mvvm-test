@@ -6,6 +6,7 @@ import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import pt.josemssilva.bucketlist.model.models.GroceryItem
+import java.lang.ClassCastException
 
 /**
  * Created by josesilva on 04/04/18.
@@ -49,22 +50,26 @@ class GroceriesFirebaseRepositoryImpl : GroceriesRepository {
         return Observable.create(observableOnSubscribe)
     }
 
-    override fun fetchData(id: String): Single<GroceryItem> {
+    override fun fetchData(id: String): Observable<GroceryItem> {
         val document = FirebaseFirestore.getInstance()
                 .collection(FB_BUCKETLIST_COLLECTION)
                 .document(id)
 
-        val single = SingleOnSubscribe<GroceryItem> { emitter ->
-            document.addSnapshotListener { snapshot, e ->
+        val observable = ObservableOnSubscribe<GroceryItem> { emitter ->
+            document.addSnapshotListener { documentSnapshot, e ->
                 if (e != null) {
                     emitter.onError(e)
-                    return@addSnapshotListener
+                } else {
+                    try {
+                        emitter.onNext(GroceryItem.mapper(documentSnapshot))
+                    } catch (e1: ClassCastException) {
+                        emitter.onError(e1)
+                    }
                 }
-                emitter.onSuccess(GroceryItem.mapper(snapshot))
             }
         }
 
-        return Single.create(single)
+        return Observable.create(observable)
     }
 
     override fun add(item: GroceryItem): Single<GroceryItem> {
@@ -74,7 +79,8 @@ class GroceriesFirebaseRepositoryImpl : GroceriesRepository {
         val single = SingleOnSubscribe<GroceryItem> { emitter ->
             collection.add(item.toMap())
                     .addOnSuccessListener { documentReference ->
-                        emitter.onSuccess(GroceryItem.mapper(documentReference))
+                        item.id = documentReference.id
+                        emitter.onSuccess(item)
                     }
                     .addOnFailureListener { exception ->
                         emitter.onError(exception)
@@ -91,21 +97,23 @@ class GroceriesFirebaseRepositoryImpl : GroceriesRepository {
 
         val single = SingleOnSubscribe<GroceryItem> { emitter ->
             document.update(item.toMap())
-                    .addOnSuccessListener { document -> emitter.onSuccess(GroceryItem.mapper(document))}
+                    .addOnSuccessListener { _ -> emitter.onSuccess(item) }
                     .addOnFailureListener { e -> emitter.onError(e) }
         }
 
         return Single.create(single)
     }
 
-    override fun deleteItem(item: GroceryItem) : Single<Void> {
+    override fun deleteItem(item: GroceryItem): Single<String> {
         val document = FirebaseFirestore.getInstance()
                 .collection(FB_BUCKETLIST_COLLECTION)
                 .document(item.id)
 
-        val single = SingleOnSubscribe<Void> { emitter ->
+        val single = SingleOnSubscribe<String> { emitter ->
             document.delete()
-                    .addOnSuccessListener { void -> emitter.onSuccess(void) }
+                    .addOnSuccessListener { _ ->
+                        emitter.onSuccess("")
+                    }
                     .addOnFailureListener { e -> emitter.onError(e) }
         }
 

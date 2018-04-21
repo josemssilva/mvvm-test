@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Bucket List</string>
 
+    <string name="app_save">Save</string>
+    <string name="app_confirm">Confirm</string>
+    <string name="app_cancel">Cancel</string>
+    <string name="app_edit">Edit</string>
+    <string name="app_delete">Delete</string>
+
     <string name="error_common_title">Something strange happened</string>
     <string name="error_common_message">We don\'t really know what, but sometimes this things happen, no?</string>
     <string name="error_tap_to_refresh">Tap to Refresh</string>

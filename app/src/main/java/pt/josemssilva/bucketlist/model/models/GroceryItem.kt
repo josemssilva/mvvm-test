@@ -1,5 +1,6 @@
 package pt.josemssilva.bucketlist.model.models
 
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.gson.Gson
@@ -14,6 +15,8 @@ data class GroceryItem(
         var image: String?,
         var comments: String?
 ) {
+    constructor() : this("", "", "", "", "")
+
     companion object {
 
         const val FIELD_ID = "id"

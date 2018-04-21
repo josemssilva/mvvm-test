@@ -8,13 +8,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.list.GroceriesListActivity">
+        <activity android:name=".ui.list.BLListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.detail.GroceryDetailActivity" />
+        <activity android:name=".ui.detail.BLDetailActivity" />
+        <activity android:name=".ui.editable.BLEditableActivity" />
     </application>
 </manifest>
