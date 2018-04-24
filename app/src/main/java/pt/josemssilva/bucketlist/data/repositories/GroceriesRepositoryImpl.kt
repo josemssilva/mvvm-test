@@ -1,24 +1,23 @@
-package pt.josemssilva.bucketlist.model.repositories
+package pt.josemssilva.bucketlist.data.repositories
 
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 import java.lang.ClassCastException
 
 /**
  * Created by josesilva on 04/04/18.
  */
-class GroceriesFirebaseRepositoryImpl : GroceriesRepository {
+class GroceriesRepositoryImpl : GroceriesRepository {
 
     companion object {
         private const val FB_BUCKETLIST_COLLECTION = "bucketlist"
     }
 
-    override fun fetchData(): Observable<List<GroceryItem>> {
-
+    private val groceriesListObservable : Observable<List<GroceryItem>> by lazy {
         val collection = FirebaseFirestore.getInstance()
                 .collection(FB_BUCKETLIST_COLLECTION)
 
@@ -29,14 +28,6 @@ class GroceriesFirebaseRepositoryImpl : GroceriesRepository {
                     return@addSnapshotListener
                 }
 
-//                snapshot.documentChanges.map { it ->
-//                    when(it.type) {
-//                        DocumentChange.Type.ADDED -> emitter.onNext(GroceryItem.mapper(it.document))
-//                        DocumentChange.Type.MODIFIED -> emitter.onNext(GroceryItem.mapper(it.document))
-//                        DocumentChange.Type.REMOVED -> emitter.onNext(GroceryItem.mapper(it.document))
-//                    }
-//                }
-
                 val list = ArrayList<GroceryItem>()
                 snapshot.documents.map { it ->
                     val item = GroceryItem.mapper(item = it)
@@ -46,8 +37,11 @@ class GroceriesFirebaseRepositoryImpl : GroceriesRepository {
                 emitter.onNext(list)
             }
         }
+        Observable.create(observableOnSubscribe)
+    }
 
-        return Observable.create(observableOnSubscribe)
+    override fun fetchData(): Observable<List<GroceryItem>> {
+        return groceriesListObservable
     }
 
     override fun fetchData(id: String): Observable<GroceryItem> {

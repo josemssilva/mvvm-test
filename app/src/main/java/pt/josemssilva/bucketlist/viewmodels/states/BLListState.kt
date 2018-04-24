@@ -1,6 +1,6 @@
 package pt.josemssilva.bucketlist.viewmodels.states
 
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 
 sealed class BLListState {
     object DataFetching : BLListState()

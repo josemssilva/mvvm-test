@@ -9,10 +9,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.TextView
+import io.reactivex.observers.DisposableObserver
 import kotlinx.android.synthetic.main.groceries_editable_layout.*
 import pt.josemssilva.bucketlist.App
 import pt.josemssilva.bucketlist.R
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.ui.BaseActivity
 import pt.josemssilva.bucketlist.ui.detail.BLDetailActivity
 import pt.josemssilva.bucketlist.viewmodels.BLEditableViewModel
@@ -35,7 +36,7 @@ class BLEditableActivity : BaseActivity() {
     }
 
     val viewModel: BLEditableViewModel by lazy {
-        val factory = BLEditableViewModelFactory(readBundle(), App.injectRepository())
+        val factory = BLEditableViewModelFactory(readBundle(), (application as App).getRepository())
         ViewModelProviders.of(this@BLEditableActivity, factory).get(BLEditableViewModel::class.java)
     }
 
@@ -58,16 +59,6 @@ class BLEditableActivity : BaseActivity() {
                         is BLEditableState.Data             -> {
                             bindData(state.data ?: GroceryItem())
                         }
-                    }
-                }
-        )
-
-        viewModel.getActionsObservable().observe(
-                this@BLEditableActivity,
-                Observer { action ->
-                    when (action) {
-                        is BLEditableActions.DataUpdated    -> finish()
-                        is BLEditableActions.DataAdded      -> navigateToCreatedItem(action.id)
                     }
                 }
         )
@@ -157,5 +148,24 @@ class BLEditableActivity : BaseActivity() {
         bundle.putString(BLDetailActivity.BUNDLE_DATA, id)
         navigateTo(BLDetailActivity::class.java, bundle)
         finish()
+    }
+
+    override fun handleSubscriptions() {
+        addSubscription(viewModel.getActionsObservable().subscribeWith(object: DisposableObserver<BLEditableActions>() {
+            override fun onComplete() {
+                // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onNext(action: BLEditableActions) {
+                when (action) {
+                    is BLEditableActions.DataUpdated    -> finish()
+                    is BLEditableActions.DataAdded      -> navigateToCreatedItem(action.id)
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }))
     }
 }

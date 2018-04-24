@@ -4,10 +4,11 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import io.reactivex.observers.DisposableObserver
 import kotlinx.android.synthetic.main.groceries_layout.*
 import pt.josemssilva.bucketlist.App
 import pt.josemssilva.bucketlist.R
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.ui.BaseActivity
 import pt.josemssilva.bucketlist.ui.adapters.BLListAdapter
 import pt.josemssilva.bucketlist.ui.detail.BLDetailActivity
@@ -23,31 +24,16 @@ import pt.josemssilva.bucketlist.viewmodels.states.BLListState
 class BLListActivity : BaseActivity(), BLListAdapter.ItemListener {
 
     private val viewModel: BLListViewModel by lazy {
-        val viewModelFactory = BLListViewModelFactory(App.injectRepository())
+        val viewModelFactory = BLListViewModelFactory(getApp().getRepository())
         ViewModelProviders.of(this@BLListActivity, viewModelFactory).get(BLListViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         bindObservers()
     }
 
     private fun bindObservers() {
-        viewModel.getActionsObservable().observe(
-                this@BLListActivity,
-                Observer { state ->
-                    when (state) {
-                        is BLListActions.AddItem -> navigateTo(BLEditableActivity::class.java)
-                        is BLListActions.ItemDetail -> {
-                            val bundle = Bundle()
-                            bundle.putString(BLDetailActivity.BUNDLE_DATA, state.itemId)
-                            navigateTo(BLDetailActivity::class.java, bundle)
-                        }
-                    }
-                }
-        )
-
         viewModel.getStateObservable().observe(
                 this@BLListActivity,
                 Observer { state ->
@@ -62,6 +48,29 @@ class BLListActivity : BaseActivity(), BLListAdapter.ItemListener {
         )
 
         fab.setOnClickListener { _ -> viewModel.addGrocery() }
+    }
+
+    override fun handleSubscriptions() {
+        addSubscription(viewModel.getActionsObservable().subscribeWith(object : DisposableObserver<BLListActions>() {
+            override fun onComplete() {
+
+            }
+
+            override fun onNext(t: BLListActions) {
+                when (t) {
+                        is BLListActions.AddItem -> navigateTo(BLEditableActivity::class.java)
+                        is BLListActions.ItemDetail -> {
+                            val bundle = Bundle()
+                            bundle.putString(BLDetailActivity.BUNDLE_DATA, t.itemId)
+                            navigateTo(BLDetailActivity::class.java, bundle)
+                        }
+                    }
+            }
+
+            override fun onError(e: Throwable) {
+
+            }
+        }))
     }
 
     override fun layoutId() = R.layout.groceries_layout
@@ -82,9 +91,5 @@ class BLListActivity : BaseActivity(), BLListAdapter.ItemListener {
 
     override fun onClick(item: GroceryItem) {
         viewModel.seeGroceryDetails(item.id)
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 }

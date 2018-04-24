@@ -3,8 +3,9 @@ package pt.josemssilva.bucketlist.viewmodels
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import io.reactivex.schedulers.Schedulers
-import pt.josemssilva.bucketlist.model.models.GroceryItem
-import pt.josemssilva.bucketlist.model.repositories.GroceriesRepository
+import io.reactivex.subjects.PublishSubject
+import pt.josemssilva.bucketlist.data.models.GroceryItem
+import pt.josemssilva.bucketlist.data.repositories.GroceriesRepository
 import pt.josemssilva.bucketlist.viewmodels.actions.BLEditableActions
 import pt.josemssilva.bucketlist.viewmodels.states.BLEditableState
 
@@ -13,7 +14,7 @@ import pt.josemssilva.bucketlist.viewmodels.states.BLEditableState
  */
 class BLEditableViewModel(private val itemId: String?, private val repo: GroceriesRepository) : ViewModel() {
 
-    private val actionsObservable = MutableLiveData<BLEditableActions>()
+    private val actionsObservable : PublishSubject<BLEditableActions> = PublishSubject.create()
     private val stateObservable = MutableLiveData<BLEditableState>()
 
     fun getActionsObservable() = actionsObservable
@@ -42,7 +43,7 @@ class BLEditableViewModel(private val itemId: String?, private val repo: Groceri
                         if (e != null) {
                             stateObservable.postValue(BLEditableState.Error(e.message))
                         } else {
-                            actionsObservable.postValue(BLEditableActions.DataUpdated)
+                            actionsObservable.onNext(BLEditableActions.DataUpdated)
                         }
                     }
         } else {
@@ -52,7 +53,7 @@ class BLEditableViewModel(private val itemId: String?, private val repo: Groceri
                         if (e != null) {
                             stateObservable.postValue(BLEditableState.Error(e.message))
                         } else {
-                            actionsObservable.postValue(BLEditableActions.DataAdded(item.id))
+                            actionsObservable.onNext(BLEditableActions.DataAdded(item.id))
                         }
                     }
         }

@@ -1,29 +1,17 @@
 package pt.josemssilva.bucketlist
 
 import android.app.Application
-import pt.josemssilva.bucketlist.viewmodels.BLListViewModel
-import pt.josemssilva.bucketlist.model.repositories.GroceriesFirebaseRepositoryImpl
-import pt.josemssilva.bucketlist.model.repositories.GroceriesRepository
+import pt.josemssilva.bucketlist.data.repositories.GroceriesRepositoryImpl
+import pt.josemssilva.bucketlist.utils.Logger
 
 /**
  * Created by josesilva on 04/04/18.
  */
 class App : Application() {
 
-    companion object {
-        private val groceriesRepository by lazy { GroceriesFirebaseRepositoryImpl() }
-        private val groceriesViewModel by lazy { BLListViewModel(injectRepository()) }
+    private val groceriesRepository by lazy { GroceriesRepositoryImpl() }
+    private val logger = Logger(this@App)
 
-        fun injectRepository() : GroceriesRepository {
-            return groceriesRepository
-        }
-
-        fun injectViewModel() : BLListViewModel {
-            return groceriesViewModel
-        }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-    }
+    fun getRepository() = groceriesRepository
+    fun getLogger() = logger
 }

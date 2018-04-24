@@ -3,10 +3,11 @@ package pt.josemssilva.bucketlist.ui.detail
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import io.reactivex.observers.DisposableObserver
 import kotlinx.android.synthetic.main.groceries_detail_layout.*
 import pt.josemssilva.bucketlist.App
 import pt.josemssilva.bucketlist.R
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.ui.BaseActivity
 import pt.josemssilva.bucketlist.ui.editable.BLEditableActivity
 import pt.josemssilva.bucketlist.viewmodels.BLDetailViewModel
@@ -24,7 +25,7 @@ class BLDetailActivity : BaseActivity() {
     }
 
     val viewModel: BLDetailViewModel by lazy {
-        val vmFactory = BLDetailViewModelFactory(readBundle(), App.injectRepository())
+        val vmFactory = BLDetailViewModelFactory(readBundle(), (application as App).getRepository())
         ViewModelProviders.of(this@BLDetailActivity, vmFactory).get(BLDetailViewModel::class.java)
     }
 
@@ -44,16 +45,6 @@ class BLDetailActivity : BaseActivity() {
                         is BLDetailState.DataFetch -> showLoadingView()
                         is BLDetailState.Data -> bindGroceryInfo(state.data)
                         is BLDetailState.Error -> showErrorView(state.message ?: "")
-                    }
-                }
-        )
-
-        viewModel.getActionsObservable().observe(
-                this@BLDetailActivity,
-                Observer { action ->
-                    when (action) {
-                        is BLDetailActions.ItemDeleted -> finish()
-                        is BLDetailActions.EditItem -> navigateToEditItem(action.itemId)
                     }
                 }
         )
@@ -84,4 +75,22 @@ class BLDetailActivity : BaseActivity() {
         navigateTo(BLEditableActivity::class.java, bundle)
     }
 
+    override fun handleSubscriptions() {
+        addSubscription(viewModel.getActionsObservable().subscribeWith(object : DisposableObserver<BLDetailActions>(){
+            override fun onComplete() {
+                // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onNext(action: BLDetailActions) {
+                when (action) {
+                    is BLDetailActions.ItemDeleted -> finish()
+                    is BLDetailActions.EditItem -> navigateToEditItem(action.itemId)
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }))
+    }
 }

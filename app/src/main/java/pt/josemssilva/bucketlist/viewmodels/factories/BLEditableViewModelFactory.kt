@@ -2,11 +2,8 @@ package pt.josemssilva.bucketlist.viewmodels.factories
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import pt.josemssilva.bucketlist.model.repositories.GroceriesRepository
-import pt.josemssilva.bucketlist.viewmodels.BLDetailViewModel
-import pt.josemssilva.bucketlist.viewmodels.BLListViewModel
+import pt.josemssilva.bucketlist.data.repositories.GroceriesRepository
 import pt.josemssilva.bucketlist.viewmodels.BLEditableViewModel
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 /**

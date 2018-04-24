@@ -3,7 +3,8 @@ package pt.josemssilva.bucketlist.viewmodels
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import io.reactivex.schedulers.Schedulers
-import pt.josemssilva.bucketlist.model.repositories.GroceriesRepository
+import io.reactivex.subjects.PublishSubject
+import pt.josemssilva.bucketlist.data.repositories.GroceriesRepository
 import pt.josemssilva.bucketlist.viewmodels.actions.BLDetailActions
 import pt.josemssilva.bucketlist.viewmodels.states.BLDetailState
 
@@ -13,7 +14,7 @@ import pt.josemssilva.bucketlist.viewmodels.states.BLDetailState
 class BLDetailViewModel(private val itemId: String, private val repo: GroceriesRepository) : ViewModel() {
 
     private val stateObservable = MutableLiveData<BLDetailState>()
-    private val actionsObservable = MutableLiveData<BLDetailActions>()
+    private val actionsObservable : PublishSubject<BLDetailActions> = PublishSubject.create()
 
     fun getStateObservable() = stateObservable
     fun getActionsObservable() = actionsObservable
@@ -36,19 +37,19 @@ class BLDetailViewModel(private val itemId: String, private val repo: GroceriesR
     }
 
     fun editItem() {
-        actionsObservable.postValue(BLDetailActions.EditItem(itemId))
+        actionsObservable.onNext(BLDetailActions.EditItem(itemId))
     }
 
     fun deleteItem() {
         if (stateObservable.value is BLDetailState.Data) {
-            val item = (actionsObservable.value as BLDetailState.Data).data
+            val item = (stateObservable.value as BLDetailState.Data).data
             repo.deleteItem(item)
                     .subscribeOn(Schedulers.io())
                     .subscribe { _, e ->
                         if (e != null) {
                             stateObservable.postValue(BLDetailState.Error(e.message))
                         } else {
-                            actionsObservable.postValue(BLDetailActions.ItemDeleted)
+                            actionsObservable.onNext(BLDetailActions.ItemDeleted)
                         }
                     }
         } else {

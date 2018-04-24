@@ -1,7 +1,7 @@
 package pt.josemssilva.bucketlist
 
 import android.support.v7.util.DiffUtil
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 
 /**
  * Created by josesilva on 05/04/18.

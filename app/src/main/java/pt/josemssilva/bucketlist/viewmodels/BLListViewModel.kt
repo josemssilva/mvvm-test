@@ -3,7 +3,8 @@ package pt.josemssilva.bucketlist.viewmodels
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import io.reactivex.schedulers.Schedulers
-import pt.josemssilva.bucketlist.model.repositories.GroceriesRepository
+import io.reactivex.subjects.PublishSubject
+import pt.josemssilva.bucketlist.data.repositories.GroceriesRepository
 import pt.josemssilva.bucketlist.viewmodels.actions.BLListActions
 import pt.josemssilva.bucketlist.viewmodels.states.BLListState
 
@@ -13,7 +14,7 @@ import pt.josemssilva.bucketlist.viewmodels.states.BLListState
 class BLListViewModel(private val repo: GroceriesRepository) : ViewModel() {
 
     private val stateObservable = MutableLiveData<BLListState>()
-    private val actionObservable = MutableLiveData<BLListActions>()
+    private val actionObservable : PublishSubject<BLListActions> = PublishSubject.create()
 
     init {
         repo.fetchData()
@@ -32,10 +33,10 @@ class BLListViewModel(private val repo: GroceriesRepository) : ViewModel() {
     fun getActionsObservable() = actionObservable
 
     fun addGrocery() {
-        actionObservable.postValue(BLListActions.AddItem)
+        actionObservable.onNext(BLListActions.AddItem)
     }
 
     fun seeGroceryDetails(id: String) {
-        actionObservable.postValue(BLListActions.ItemDetail(id))
+        actionObservable.onNext(BLListActions.ItemDetail(id))
     }
 }

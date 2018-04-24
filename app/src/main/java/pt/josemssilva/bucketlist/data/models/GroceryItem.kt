@@ -1,6 +1,5 @@
-package pt.josemssilva.bucketlist.model.models
+package pt.josemssilva.bucketlist.data.models
 
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.gson.Gson

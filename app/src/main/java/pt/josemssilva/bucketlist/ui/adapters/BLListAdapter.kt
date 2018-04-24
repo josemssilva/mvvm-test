@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.groceries_list_item.view.*
 import pt.josemssilva.bucketlist.GroceriesDiffCallback
 import pt.josemssilva.bucketlist.R
-import pt.josemssilva.bucketlist.model.models.GroceryItem
+import pt.josemssilva.bucketlist.data.models.GroceryItem
 
 /**
  * Created by josesilva on 05/04/18.

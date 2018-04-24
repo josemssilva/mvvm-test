@@ -1,4 +1,4 @@
-package pt.josemssilva.bucketlist.model.repositories
+package pt.josemssilva.bucketlist.data.repositories
 
 import io.reactivex.Observable
 import io.reactivex.Single
