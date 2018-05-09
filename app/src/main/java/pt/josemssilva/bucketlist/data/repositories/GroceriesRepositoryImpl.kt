@@ -29,7 +29,7 @@ class GroceriesRepositoryImpl : GroceriesRepository {
                 }
 
                 val list = ArrayList<GroceryItem>()
-                snapshot.documents.map { it ->
+                snapshot?.documents?.map { it ->
                     val item = GroceryItem.mapper(item = it)
                     list.add(item)
                 }
@@ -50,12 +50,13 @@ class GroceriesRepositoryImpl : GroceriesRepository {
                 .document(id)
 
         val observable = ObservableOnSubscribe<GroceryItem> { emitter ->
+
             document.addSnapshotListener { documentSnapshot, e ->
                 if (e != null) {
                     emitter.onError(e)
                 } else {
                     try {
-                        emitter.onNext(GroceryItem.mapper(documentSnapshot))
+                        emitter.onNext(GroceryItem.mapper(documentSnapshot!!))
                     } catch (e1: ClassCastException) {
                         emitter.onError(e1)
                     }

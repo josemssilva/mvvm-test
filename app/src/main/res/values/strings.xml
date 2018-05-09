@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Bucket List</string>
 
+    <string name="facebook_app_id">783691068503786</string>
+    <string name="fb_login_protocol_scheme">fb783691068503786</string>
+
     <string name="app_save">Save</string>
     <string name="app_confirm">Confirm</string>
     <string name="app_cancel">Cancel</string>
