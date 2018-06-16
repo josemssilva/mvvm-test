@@ -76,7 +76,8 @@ class BLEditableActivity : BaseActivity() {
                     description_field.text.toString() ?: "",
                     quantity_field.text.toString() ?: "",
                     comments_field.text.toString() ?: "",
-                    image.url ?: ""
+                    image.url ?: "",
+                    GroceryItem.State.NONE
             )
         }
     }

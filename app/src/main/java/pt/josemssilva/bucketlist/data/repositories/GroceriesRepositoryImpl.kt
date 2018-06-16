@@ -17,11 +17,11 @@ class GroceriesRepositoryImpl : GroceriesRepository {
         private const val FB_BUCKETLIST_COLLECTION = "bucketlist"
     }
 
-    private val groceriesListObservable : Observable<List<GroceryItem>> by lazy {
-        val collection = FirebaseFirestore.getInstance()
-                .collection(FB_BUCKETLIST_COLLECTION)
+    override fun fetchData(): Observable<List<GroceryItem>> {
 
-        val observableOnSubscribe = ObservableOnSubscribe<List<GroceryItem>> { emitter ->
+        return Observable.create { emitter ->
+            val collection = FirebaseFirestore.getInstance()
+                    .collection(FB_BUCKETLIST_COLLECTION)
             collection.addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     emitter.onError(Exception("error loading data"))
@@ -37,19 +37,14 @@ class GroceriesRepositoryImpl : GroceriesRepository {
                 emitter.onNext(list)
             }
         }
-        Observable.create(observableOnSubscribe)
-    }
-
-    override fun fetchData(): Observable<List<GroceryItem>> {
-        return groceriesListObservable
     }
 
     override fun fetchData(id: String): Observable<GroceryItem> {
-        val document = FirebaseFirestore.getInstance()
-                .collection(FB_BUCKETLIST_COLLECTION)
-                .document(id)
 
-        val observable = ObservableOnSubscribe<GroceryItem> { emitter ->
+        return Observable.create { emitter ->
+            val document = FirebaseFirestore.getInstance()
+                    .collection(FB_BUCKETLIST_COLLECTION)
+                    .document(id)
 
             document.addSnapshotListener { documentSnapshot, e ->
                 if (e != null) {
@@ -63,8 +58,6 @@ class GroceriesRepositoryImpl : GroceriesRepository {
                 }
             }
         }
-
-        return Observable.create(observable)
     }
 
     override fun add(item: GroceryItem): Single<GroceryItem> {

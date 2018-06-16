@@ -11,6 +11,7 @@ import pt.josemssilva.bucketlist.R
 import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.ui.BaseActivity
 import pt.josemssilva.bucketlist.ui.adapters.BLListAdapter
+import pt.josemssilva.bucketlist.ui.adapters.BLListItemDecorator
 import pt.josemssilva.bucketlist.ui.detail.BLDetailActivity
 import pt.josemssilva.bucketlist.ui.editable.BLEditableActivity
 import pt.josemssilva.bucketlist.viewmodels.BLListViewModel
@@ -84,6 +85,9 @@ class BLListActivity : BaseActivity(), BLListAdapter.ItemListener {
         if (list.adapter == null) {
             list.adapter = BLListAdapter(this@BLListActivity)
             list.layoutManager = LinearLayoutManager(this@BLListActivity)
+
+            if (list.itemDecorationCount == 0)
+                list.addItemDecoration(BLListItemDecorator())
         }
         (list.adapter as BLListAdapter).updateItems(items)
         showContentView()

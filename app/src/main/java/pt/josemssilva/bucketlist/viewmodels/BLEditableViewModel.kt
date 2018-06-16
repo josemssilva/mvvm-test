@@ -33,8 +33,8 @@ class BLEditableViewModel(private val itemId: String?, private val repo: Groceri
         }
     }
 
-    fun submitData(description: String, quantity: String, comments: String, image: String) {
-        val item = GroceryItem("", description, quantity, image, comments)
+    fun submitData(description: String, quantity: String, comments: String, image: String, state: GroceryItem.State) {
+        val item = GroceryItem("", description, quantity, image, comments, state)
         if (itemId != null) {
             item.id = itemId
             repo.updateItem(item)

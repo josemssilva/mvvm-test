@@ -5,14 +5,11 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.util.Log
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuth
 import io.reactivex.observers.DisposableObserver
 import pt.josemssilva.bucketlist.R
 import pt.josemssilva.bucketlist.ui.BaseActivity
@@ -102,7 +99,6 @@ class BLLoginActivity : BaseActivity() {
 //                                Log.e("TESTE", "ON CANCELED!!")
 //
 //                            }
-
 
 
                 } else {

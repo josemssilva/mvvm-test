@@ -7,4 +7,9 @@
     <string name="groceries_image">image</string>
     <string name="groceries_comments">comments</string>
 
+    <string name="groceries_item_state_none">Nenhum</string>
+    <string name="groceries_item_state_few">Pouco</string>
+    <string name="groceries_item_state_some">Algum</string>
+    <string name="groceries_item_state_full">Cheio</string>
+    <string name="groceries_item_state_unknown">Desconhecido</string>
 </resources>

@@ -1,5 +1,7 @@
 package pt.josemssilva.bucketlist.ui.adapters
 
+import android.content.Context
+import android.graphics.Rect
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -46,6 +48,8 @@ class BLListAdapter(val itemListener: ItemListener) : RecyclerView.Adapter<BLLis
         fun onBind(item: GroceryItem) {
             itemView.description.text = item.description
             itemView.quantity.text = item.quantity
+            itemView.state.text = item.state.readableString(itemView.context)
+            itemView.state.setBackgroundColor(item.state.color())
             itemView.setOnClickListener(this)
         }
 
@@ -54,4 +58,22 @@ class BLListAdapter(val itemListener: ItemListener) : RecyclerView.Adapter<BLLis
         }
     }
 
+}
+
+class BLListItemDecorator : RecyclerView.ItemDecoration() {
+    override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
+        super.getItemOffsets(outRect, view, parent, state)
+
+        if (outRect == null || view == null || parent == null) return
+
+        val marginSize = parent.context.resources.getDimensionPixelSize(R.dimen.margin_normal)
+
+        outRect.top = marginSize
+        outRect.left = marginSize
+        outRect.right = marginSize
+
+        if (parent.adapter != null && (parent.adapter.itemCount == parent.getChildAdapterPosition(view) + 1)) {
+            outRect.bottom = marginSize
+        }
+    }
 }
