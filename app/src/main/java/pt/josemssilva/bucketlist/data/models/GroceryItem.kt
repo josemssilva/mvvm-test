@@ -49,7 +49,7 @@ data class GroceryItem(
         }
     }
 
-    constructor() : this("", "", "", "", "", State.UNKNOWN)
+    private constructor() : this("", "", "", "", "", State.UNKNOWN)
 
     companion object {
 
@@ -59,6 +59,8 @@ data class GroceryItem(
         const val FIELD_IMAGE = "image"
         const val FIELD_COMMENTS = "comments"
         const val FIELD_STATE = "state"
+
+        val EMPTY = GroceryItem()
 
         fun mapper(item: Any): GroceryItem {
             when (item) {
@@ -71,6 +73,10 @@ data class GroceryItem(
                     return grocery
                 }
                 is DocumentSnapshot -> {
+                    if (item.data == null) {
+                        return EMPTY
+                    }
+
                     val gson = GsonBuilder()
                             .registerTypeAdapter(GroceryItem.State::class.java, GroceryItemStateDeserializer())
                             .create()

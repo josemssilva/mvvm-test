@@ -57,7 +57,7 @@ class BLEditableActivity : BaseActivity() {
                         is BLEditableState.DataProcessing   -> showLoadingView()
                         is BLEditableState.Error            -> showErrorView(state.message ?: "")
                         is BLEditableState.Data             -> {
-                            bindData(state.data ?: GroceryItem())
+                            bindData(state.data ?: GroceryItem.EMPTY)
                         }
                     }
                 }
