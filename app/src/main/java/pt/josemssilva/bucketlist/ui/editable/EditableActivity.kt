@@ -15,17 +15,17 @@ import pt.josemssilva.bucketlist.App
 import pt.josemssilva.bucketlist.R
 import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.ui.BaseActivity
-import pt.josemssilva.bucketlist.ui.detail.BLDetailActivity
-import pt.josemssilva.bucketlist.viewmodels.BLEditableViewModel
-import pt.josemssilva.bucketlist.viewmodels.factories.BLEditableViewModelFactory
-import pt.josemssilva.bucketlist.viewmodels.actions.BLEditableActions
-import pt.josemssilva.bucketlist.viewmodels.states.BLEditableState
+import pt.josemssilva.bucketlist.ui.detail.DetailActivity
+import pt.josemssilva.bucketlist.viewmodels.EditableViewModel
+import pt.josemssilva.bucketlist.viewmodels.factories.EditableViewModelFactory
+import pt.josemssilva.bucketlist.viewmodels.actions.EditableActions
+import pt.josemssilva.bucketlist.viewmodels.states.EditableState
 import java.util.concurrent.TimeUnit
 
 /**
  * Created by josesilva on 10/04/18.
  */
-class BLEditableActivity : BaseActivity() {
+class EditableActivity : BaseActivity() {
 
     companion object {
 
@@ -35,9 +35,9 @@ class BLEditableActivity : BaseActivity() {
         private const val REQUEST_IMAGE_SELECT = 502
     }
 
-    val viewModel: BLEditableViewModel by lazy {
-        val factory = BLEditableViewModelFactory(readBundle(), (application as App).getRepository())
-        ViewModelProviders.of(this@BLEditableActivity, factory).get(BLEditableViewModel::class.java)
+    val viewModel: EditableViewModel by lazy {
+        val factory = EditableViewModelFactory(readBundle(), (application as App).getRepository())
+        ViewModelProviders.of(this@EditableActivity, factory).get(EditableViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,12 +51,12 @@ class BLEditableActivity : BaseActivity() {
     private fun bindUiObservers() {
 
         viewModel.getStateObservable().observe(
-                this@BLEditableActivity,
+                this@EditableActivity,
                 Observer { state ->
                     when (state) {
-                        is BLEditableState.DataProcessing   -> showLoadingView()
-                        is BLEditableState.Error            -> showErrorView(state.message ?: "")
-                        is BLEditableState.Data             -> {
+                        is EditableState.DataProcessing   -> showLoadingView()
+                        is EditableState.Error            -> showErrorView(state.message ?: "")
+                        is EditableState.Data             -> {
                             bindData(state.data ?: GroceryItem.EMPTY)
                         }
                     }
@@ -84,12 +84,17 @@ class BLEditableActivity : BaseActivity() {
 
     private fun readBundle(): String? {
         var bundledData: String? = null
+        val titleResourceId : Int
         if (intent.hasExtra(BUNDLE_DATA)) {
             bundledData = intent.getStringExtra(BUNDLE_DATA)
             showLoadingView()
+            titleResourceId = R.string.editable_title
         } else {
             showContentView()
+            titleResourceId = R.string.create_title
         }
+
+        setupActionBar(getString(titleResourceId), true)
         return bundledData
     }
 
@@ -105,7 +110,7 @@ class BLEditableActivity : BaseActivity() {
     }
 
     private fun openImageDialog() {
-        AlertDialog.Builder(this@BLEditableActivity)
+        AlertDialog.Builder(this@EditableActivity)
                 .setItems(
                         resources.getStringArray(R.array.camera_dialog_options),
                         DialogInterface.OnClickListener { dialog, i ->
@@ -146,21 +151,21 @@ class BLEditableActivity : BaseActivity() {
 
     private fun navigateToCreatedItem(id: String) {
         val bundle = Bundle()
-        bundle.putString(BLDetailActivity.BUNDLE_DATA, id)
-        navigateTo(BLDetailActivity::class.java, bundle)
+        bundle.putString(DetailActivity.BUNDLE_DATA, id)
+        navigateTo(DetailActivity::class.java, bundle)
         finish()
     }
 
     override fun handleSubscriptions() {
-        addSubscription(viewModel.getActionsObservable().subscribeWith(object: DisposableObserver<BLEditableActions>() {
+        addSubscription(viewModel.getActionsObservable().subscribeWith(object: DisposableObserver<EditableActions>() {
             override fun onComplete() {
                 // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun onNext(action: BLEditableActions) {
+            override fun onNext(action: EditableActions) {
                 when (action) {
-                    is BLEditableActions.DataUpdated    -> finish()
-                    is BLEditableActions.DataAdded      -> navigateToCreatedItem(action.id)
+                    is EditableActions.DataUpdated    -> finish()
+                    is EditableActions.DataAdded      -> navigateToCreatedItem(action.id)
                 }
             }
 

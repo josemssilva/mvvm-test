@@ -3,6 +3,7 @@ package pt.josemssilva.bucketlist.ui
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -63,11 +64,35 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     abstract fun layoutId(): Int
 
     fun setupUi() {
         base_stub.layoutResource = layoutId()
         mView = base_stub.inflate()
+    }
+
+    open fun setupActionBar(title: String) {
+        setupActionBar(title, false)
+    }
+
+    fun setupActionBar(title: String?, navigatesBack: Boolean) {
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(navigatesBack)
+            setDisplayShowHomeEnabled(navigatesBack)
+
+            setTitle(title ?: "")
+        }
     }
 
     fun showContentView() {

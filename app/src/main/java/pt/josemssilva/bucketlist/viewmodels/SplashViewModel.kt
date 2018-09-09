@@ -1,21 +1,19 @@
 package pt.josemssilva.bucketlist.viewmodels
 
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import io.reactivex.subjects.PublishSubject
 import pt.josemssilva.bucketlist.data.managers.SessionManager
-import pt.josemssilva.bucketlist.data.models.Session
-import pt.josemssilva.bucketlist.viewmodels.actions.BLSplashActions
+import pt.josemssilva.bucketlist.viewmodels.actions.SplashActions
 
-class BLSplashViewModel(val sessionManager: SessionManager) : ViewModel() {
-    val actions = PublishSubject.create<BLSplashActions>()
+class SplashViewModel(val sessionManager: SessionManager) : ViewModel() {
+    val actions = PublishSubject.create<SplashActions>()
 
     fun requestFlowDecision() {
         actions.onNext(
                 if (!sessionManager.getSession().isNull) {
-                    BLSplashActions.GoHome
+                    SplashActions.GoHome
                 } else {
-                    BLSplashActions.GoDoLogin
+                    SplashActions.GoDoLogin
                 }
         )
     }

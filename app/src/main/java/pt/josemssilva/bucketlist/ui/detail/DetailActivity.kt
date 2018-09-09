@@ -9,24 +9,24 @@ import pt.josemssilva.bucketlist.App
 import pt.josemssilva.bucketlist.R
 import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.ui.BaseActivity
-import pt.josemssilva.bucketlist.ui.editable.BLEditableActivity
-import pt.josemssilva.bucketlist.viewmodels.BLDetailViewModel
-import pt.josemssilva.bucketlist.viewmodels.actions.BLDetailActions
-import pt.josemssilva.bucketlist.viewmodels.factories.BLDetailViewModelFactory
-import pt.josemssilva.bucketlist.viewmodels.states.BLDetailState
+import pt.josemssilva.bucketlist.ui.editable.EditableActivity
+import pt.josemssilva.bucketlist.viewmodels.DetailViewModel
+import pt.josemssilva.bucketlist.viewmodels.actions.DetailActions
+import pt.josemssilva.bucketlist.viewmodels.factories.DetailViewModelFactory
+import pt.josemssilva.bucketlist.viewmodels.states.DetailState
 
 /**
  * Created by josesilva on 05/04/18.
  */
-class BLDetailActivity : BaseActivity() {
+class DetailActivity : BaseActivity() {
 
     companion object {
         const val BUNDLE_DATA = "detail:bundle_data"
     }
 
-    val viewModel: BLDetailViewModel by lazy {
-        val vmFactory = BLDetailViewModelFactory(readBundle(), (application as App).getRepository())
-        ViewModelProviders.of(this@BLDetailActivity, vmFactory).get(BLDetailViewModel::class.java)
+    val viewModel: DetailViewModel by lazy {
+        val vmFactory = DetailViewModelFactory(readBundle(), (application as App).getRepository())
+        ViewModelProviders.of(this@DetailActivity, vmFactory).get(DetailViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,17 +34,18 @@ class BLDetailActivity : BaseActivity() {
 
         bindObservers()
         readBundle()
+        setupActionBar(getString(R.string.detail_title), true)
     }
 
     private fun bindObservers() {
 
         viewModel.getStateObservable().observe(
-                this@BLDetailActivity,
+                this@DetailActivity,
                 Observer { state ->
                     when (state) {
-                        is BLDetailState.DataFetch -> showLoadingView()
-                        is BLDetailState.Data -> bindGroceryInfo(state.data)
-                        is BLDetailState.Error -> showErrorView(state.message ?: "")
+                        is DetailState.DataFetch -> showLoadingView()
+                        is DetailState.Data -> bindGroceryInfo(state.data)
+                        is DetailState.Error -> showErrorView(state.message ?: "")
                     }
                 }
         )
@@ -71,20 +72,20 @@ class BLDetailActivity : BaseActivity() {
 
     private fun navigateToEditItem(itemId: String) {
         val bundle = Bundle()
-        bundle.putString(BLEditableActivity.BUNDLE_DATA, itemId)
-        navigateTo(BLEditableActivity::class.java, bundle)
+        bundle.putString(EditableActivity.BUNDLE_DATA, itemId)
+        navigateTo(EditableActivity::class.java, bundle)
     }
 
     override fun handleSubscriptions() {
-        addSubscription(viewModel.getActionsObservable().subscribeWith(object : DisposableObserver<BLDetailActions>(){
+        addSubscription(viewModel.getActionsObservable().subscribeWith(object : DisposableObserver<DetailActions>(){
             override fun onComplete() {
                 // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun onNext(action: BLDetailActions) {
+            override fun onNext(action: DetailActions) {
                 when (action) {
-                    is BLDetailActions.ItemDeleted -> finish()
-                    is BLDetailActions.EditItem -> navigateToEditItem(action.itemId)
+                    is DetailActions.ItemDeleted -> finish()
+                    is DetailActions.EditItem -> navigateToEditItem(action.itemId)
                 }
             }
 

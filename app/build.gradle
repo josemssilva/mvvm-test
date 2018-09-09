@@ -38,6 +38,7 @@ ext.firebase_version = '15.0.0'
 ext.gson_version = '2.8.2'
 ext.arch_version = '1.1.1'
 ext.fb_version = '[4,5)'
+ext.google_signin_version = '15.0.1'
 
 dependencies {
 
@@ -72,6 +73,7 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
 
     implementation "com.facebook.android:facebook-login:$fb_version"
+    implementation "com.google.android.gms:play-services-auth:$google_signin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'

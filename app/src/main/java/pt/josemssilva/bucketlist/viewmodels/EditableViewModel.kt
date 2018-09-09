@@ -6,16 +6,16 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import pt.josemssilva.bucketlist.data.models.GroceryItem
 import pt.josemssilva.bucketlist.data.repositories.GroceriesRepository
-import pt.josemssilva.bucketlist.viewmodels.actions.BLEditableActions
-import pt.josemssilva.bucketlist.viewmodels.states.BLEditableState
+import pt.josemssilva.bucketlist.viewmodels.actions.EditableActions
+import pt.josemssilva.bucketlist.viewmodels.states.EditableState
 
 /**
  * Created by josesilva on 10/04/18.
  */
-class BLEditableViewModel(private val itemId: String?, private val repo: GroceriesRepository) : ViewModel() {
+class EditableViewModel(private val itemId: String?, private val repo: GroceriesRepository) : ViewModel() {
 
-    private val actionsObservable : PublishSubject<BLEditableActions> = PublishSubject.create()
-    private val stateObservable = MutableLiveData<BLEditableState>()
+    private val actionsObservable : PublishSubject<EditableActions> = PublishSubject.create()
+    private val stateObservable = MutableLiveData<EditableState>()
 
     fun getActionsObservable() = actionsObservable
     fun getStateObservable() = stateObservable
@@ -28,8 +28,8 @@ class BLEditableViewModel(private val itemId: String?, private val repo: Groceri
         if (itemId != null) {
             repo.fetchData(itemId)
                     .subscribeOn(Schedulers.io())
-                    .subscribe({ item -> stateObservable.postValue(BLEditableState.Data(item)) },
-                            { e -> stateObservable.postValue(BLEditableState.Error(e.message)) })
+                    .subscribe({ item -> stateObservable.postValue(EditableState.Data(item)) },
+                            { e -> stateObservable.postValue(EditableState.Error(e.message)) })
         }
     }
 
@@ -41,9 +41,9 @@ class BLEditableViewModel(private val itemId: String?, private val repo: Groceri
                     .subscribeOn(Schedulers.io())
                     .subscribe { item, e ->
                         if (e != null) {
-                            stateObservable.postValue(BLEditableState.Error(e.message))
+                            stateObservable.postValue(EditableState.Error(e.message))
                         } else {
-                            actionsObservable.onNext(BLEditableActions.DataUpdated)
+                            actionsObservable.onNext(EditableActions.DataUpdated)
                         }
                     }
         } else {
@@ -51,9 +51,9 @@ class BLEditableViewModel(private val itemId: String?, private val repo: Groceri
                     .subscribeOn(Schedulers.io())
                     .subscribe { item, e ->
                         if (e != null) {
-                            stateObservable.postValue(BLEditableState.Error(e.message))
+                            stateObservable.postValue(EditableState.Error(e.message))
                         } else {
-                            actionsObservable.onNext(BLEditableActions.DataAdded(item.id))
+                            actionsObservable.onNext(EditableActions.DataAdded(item.id))
                         }
                     }
         }

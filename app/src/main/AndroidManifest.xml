@@ -7,17 +7,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.splash.BLSplashActivity">
+        <activity android:name=".ui.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.login.BLLoginActivity" />
-        <activity android:name=".ui.list.BLListActivity" />
-        <activity android:name=".ui.detail.BLDetailActivity" />
-        <activity android:name=".ui.editable.BLEditableActivity" />
+        <activity android:name=".ui.login.LoginActivity" />
+        <activity android:name=".ui.list.ListActivity" />
+        <activity android:name=".ui.detail.DetailActivity" />
+        <activity android:name=".ui.editable.EditableActivity" />
 
         <!-- fb related -->
 

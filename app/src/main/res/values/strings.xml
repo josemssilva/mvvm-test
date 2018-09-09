@@ -16,4 +16,8 @@
 
     <string name="camera_dialog_option_take">Take Picture</string>
     <string name="camera_dialog_option_select">Select File</string>
+
+    <string name="detail_title">Detalhe</string>
+    <string name="create_title">Nova mercearia</string>
+    <string name="editable_title">Editar mercearia</string>
 </resources>
