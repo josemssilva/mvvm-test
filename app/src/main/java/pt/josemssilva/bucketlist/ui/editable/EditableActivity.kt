@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import io.reactivex.observers.DisposableObserver
 import kotlinx.android.synthetic.main.groceries_editable_layout.*
@@ -25,14 +26,14 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by josesilva on 10/04/18.
  */
+
+private const val REQUEST_IMAGE_TAKE = 501
+private const val REQUEST_IMAGE_SELECT = 502
+
 class EditableActivity : BaseActivity() {
 
     companion object {
-
         const val BUNDLE_DATA = "editable:bundle_data"
-
-        private const val REQUEST_IMAGE_TAKE = 501
-        private const val REQUEST_IMAGE_SELECT = 502
     }
 
     val viewModel: EditableViewModel by lazy {
@@ -63,20 +64,22 @@ class EditableActivity : BaseActivity() {
                 }
         )
 
-        image.fetchImage
-                .debounce(500, TimeUnit.MILLISECONDS)
-                .subscribe { value ->
-                    if (value) {
-                        openImageDialog()
-                    }
-                }
+//        image.fetchImage
+//                .debounce(500, TimeUnit.MILLISECONDS)
+//                .subscribe { value ->
+//                    if (value) {
+//                        openImageDialog()
+//                    }
+//                }
+
+        state_spinner.adapter = ArrayAdapter<GroceryItem.State>(this@EditableActivity, android.R.layout.simple_spinner_item, GroceryItem.State.values())
 
         button.setOnClickListener { _ ->
             viewModel.submitData(
                     description_field.text.toString() ?: "",
                     quantity_field.text.toString() ?: "",
                     comments_field.text.toString() ?: "",
-                    image.url ?: "",
+                    "",
                     GroceryItem.State.NONE
             )
         }
@@ -103,9 +106,9 @@ class EditableActivity : BaseActivity() {
                 ?: "", TextView.BufferType.EDITABLE)
         quantity_field.setText(item.quantity
                 ?: "", TextView.BufferType.EDITABLE)
+        state_spinner.setSelection(GroceryItem.State.values().indexOf(item.state))
         comments_field.setText(item.comments
                 ?: "", TextView.BufferType.EDITABLE)
-        image.url = item.image ?: ""
         showContentView()
     }
 
